@@ -8,25 +8,51 @@
     <style>
         .card {
             margin: 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            overflow: hidden;
         }
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .card-body {
+            padding: 2rem;
         }
         .fee-badge {
             font-size: 1.1rem;
-            padding: 0.75rem 1.25rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #4b6cb7, #182848);
+            transition: transform 0.2s;
+        }
+        .fee-badge:hover {
+            transform: scale(1.05);
         }
         .refresh-info {
             font-size: 0.9rem;
             color: #666;
+            background: rgba(255,255,255,0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        h1 {
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, #4b6cb7, #182848);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body class="bg-light">
     <div class="container py-5">
-        <h1 class="text-center mb-4">Lisk L2 Transaction Cost Estimator</h1>
+        <h1 class="text-center mb-4">True Lisk L2 Transaction Cost Estimator</h1>
         
         <div class="row">
             <div class="col-md-4">
@@ -82,7 +108,8 @@
         </div>
 
         <div class="text-center mt-4 refresh-info">
-            Prices update every 15 seconds • Last updated: <span id="last-updated">–</span>
+            Prices update every 15 seconds • Last updated: <span id="last-updated">–</span><br>
+            <small>Calculations include L1 blob prices, Ethereum base fees, and L2 execution fees. Transaction sizes may vary, and wallet fee priority settings may increase actual fees.</small>
         </div>
     </div>
 
