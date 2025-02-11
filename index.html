@@ -54,30 +54,7 @@
   <div class="container py-5">
     <h1 class="text-center mb-4">True Lisk L2 Transaction Cost Estimator</h1>
 
-    <!-- New banner row with two cards: one for the Lisk Base Fee and one for the Ethereum Blob Price -->
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">Current Lisk Base Fee</h5>
-            <p class="card-text">
-              <span id="lisk-base">–</span> gwei
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">Ethereum Blob Price</h5>
-            <p class="card-text">
-              <span id="eth-blob">–</span> gwei
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <!-- Transaction Cards Row -->
     <div class="row">
       <div class="col-md-4">
         <div class="card">
@@ -131,6 +108,31 @@
       </div>
     </div>
 
+    <!-- Banner Row (moved below the transaction cards) -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">Current Lisk Base Fee</h5>
+            <p class="card-text">
+              <span id="lisk-base">–</span> gwei
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">Ethereum Blob Price</h5>
+            <p class="card-text">
+              <span id="eth-blob">–</span> gwei
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Refresh/Info Footer -->
     <div class="text-center mt-4 refresh-info">
       Prices update every 15 seconds • Last updated: <span id="last-updated">–</span><br>
       <small>Calculations include L1 blob prices, Ethereum base fees, and L2 execution fees. Transaction sizes may vary, and wallet fee priority settings may increase actual fees.</small>
@@ -204,11 +206,9 @@
         document.getElementById(`${tx.id}-usd`).textContent = `$${fees.usd}`;
       });
 
-      // Update current Lisk base fee (from L2) with 9 decimals
+      // Update banner values
       document.getElementById('lisk-base').textContent =
         parseFloat(data.l2BaseFee).toFixed(9);
-
-      // Update Ethereum blob price (from L1) with 9 decimals
       document.getElementById('eth-blob').textContent =
         parseFloat(data.l1BlobFee).toFixed(9);
 
@@ -216,9 +216,22 @@
         new Date().toLocaleTimeString();
     }
 
-    // Initial load and refresh every 15 seconds
+    // Initial load
     updatePrices();
-    setInterval(updatePrices, 15000);
+
+    // Refresh every 15 seconds, but only if the page is visible
+    setInterval(() => {
+      if (!document.hidden) {
+        updatePrices();
+      }
+    }, 15000);
+
+    // Immediately update prices when the page becomes visible
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        updatePrices();
+      }
+    });
   </script>
 </body>
 </html>
