@@ -54,14 +54,24 @@
   <div class="container py-5">
     <h1 class="text-center mb-4">True Lisk L2 Transaction Cost Estimator</h1>
 
-    <!-- New banner card displaying the current Lisk base fee with consistent visuals -->
+    <!-- New banner row with two cards: one for the Lisk Base Fee and one for the Ethereum Blob Price -->
     <div class="row mb-4">
-      <div class="col">
+      <div class="col-md-6">
         <div class="card">
           <div class="card-body text-center">
             <h5 class="card-title">Current Lisk Base Fee</h5>
             <p class="card-text">
               <span id="lisk-base">–</span> gwei
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">Ethereum Blob Price</h5>
+            <p class="card-text">
+              <span id="eth-blob">–</span> gwei
             </p>
           </div>
         </div>
@@ -147,7 +157,7 @@
 
         return {
           ethPrice,
-          // These values are assumed to be in gwei
+          // Values are assumed to be in gwei
           l1BaseFee: l1Data.baseFeePerGas,
           l1BlobFee: l1Data.blobBaseFeePerGas,
           l2BaseFee: l2Data.blockPrices[0].baseFeePerGas
@@ -194,10 +204,16 @@
         document.getElementById(`${tx.id}-usd`).textContent = `$${fees.usd}`;
       });
 
-      // Update the current Lisk base fee display with 10 decimals
-      document.getElementById('lisk-base').textContent = parseFloat(data.l2BaseFee).toFixed(9);
+      // Update current Lisk base fee (from L2) with 9 decimals
+      document.getElementById('lisk-base').textContent =
+        parseFloat(data.l2BaseFee).toFixed(9);
 
-      document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+      // Update Ethereum blob price (from L1) with 9 decimals
+      document.getElementById('eth-blob').textContent =
+        parseFloat(data.l1BlobFee).toFixed(9);
+
+      document.getElementById('last-updated').textContent =
+        new Date().toLocaleTimeString();
     }
 
     // Initial load and refresh every 15 seconds
