@@ -1,191 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lisk L2 Gas Fee Estimator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .card {
-            margin: 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            border: none;
-            border-radius: 15px;
-            background: linear-gradient(145deg, #ffffff, #f8f9fa);
-            overflow: hidden;
-        }
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-        .card-body {
-            padding: 2rem;
-        }
-        .fee-badge {
-            font-size: 1.1rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            background: linear-gradient(45deg, #4b6cb7, #182848);
-            transition: transform 0.2s;
-        }
-        .fee-badge:hover {
-            transform: scale(1.05);
-        }
-        .refresh-info {
-            font-size: 0.9rem;
-            color: #666;
-            background: rgba(255,255,255,0.9);
-            padding: 1rem;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
-        h1 {
-            font-weight: 700;
-            letter-spacing: -1px;
-            background: linear-gradient(45deg, #4b6cb7, #182848);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lisk L2 Gas Fee Estimator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .card {
+      margin: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #ffffff, #f8f9fa);
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    .card-body {
+      padding: 2rem;
+    }
+    .fee-badge {
+      font-size: 1.1rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      background: linear-gradient(45deg, #4b6cb7, #182848);
+      transition: transform 0.2s;
+    }
+    .fee-badge:hover {
+      transform: scale(1.05);
+    }
+    .refresh-info {
+      font-size: 0.9rem;
+      color: #666;
+      background: rgba(255,255,255,0.9);
+      padding: 1rem;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+    }
+    h1 {
+      font-weight: 700;
+      letter-spacing: -1px;
+      background: linear-gradient(45deg, #4b6cb7, #182848);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body class="bg-light">
-    <div class="container py-5">
-        <h1 class="text-center mb-4">True Lisk L2 Transaction Cost Estimator</h1>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Regular Transfer</h5>
-                        <p class="text-muted">21000 gas • 100 bytes</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span>Total Fee (ETH):</span>
-                            <span class="badge bg-primary fee-badge" id="regular-eth">–</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Total Fee (USD):</span>
-                            <span class="badge bg-success fee-badge" id="regular-usd">–</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="container py-5">
+    <h1 class="text-center mb-4">True Lisk L2 Transaction Cost Estimator</h1>
 
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">IONIC Borrow</h5>
-                        <p class="text-muted">1,500,000 gas • 100 bytes</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span>Total Fee (ETH):</span>
-                            <span class="badge bg-primary fee-badge" id="ionic-eth">–</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Total Fee (USD):</span>
-                            <span class="badge bg-success fee-badge" id="ionic-usd">–</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">OKU Trade Swap</h5>
-                        <p class="text-muted">200,000 gas • 300 bytes</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span>Total Fee (ETH):</span>
-                            <span class="badge bg-primary fee-badge" id="oku-eth">–</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Total Fee (USD):</span>
-                            <span class="badge bg-success fee-badge" id="oku-usd">–</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- New banner card displaying the current Lisk base fee with consistent visuals -->
+    <div class="row mb-4">
+      <div class="col">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">Current Lisk Base Fee</h5>
+            <p class="card-text">
+              <span id="lisk-base">–</span> gwei
+            </p>
+          </div>
         </div>
-
-        <div class="text-center mt-4 refresh-info">
-            Prices update every 15 seconds • Last updated: <span id="last-updated">–</span><br>
-            <small>Calculations include L1 blob prices, Ethereum base fees, and L2 execution fees. Transaction sizes may vary, and wallet fee priority settings may increase actual fees.</small>
-        </div>
+      </div>
     </div>
 
-    <script>
-        const SCALARS = {
-            base_fee: 0.024740,
-            blob_base_fee: 0.801328
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Regular Transfer</h5>
+            <p class="text-muted">21000 gas • 100 bytes</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span>Total Fee (ETH):</span>
+              <span class="badge bg-primary fee-badge" id="regular-eth">–</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span>Total Fee (USD):</span>
+              <span class="badge bg-success fee-badge" id="regular-usd">–</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">IONIC Borrow</h5>
+            <p class="text-muted">1,500,000 gas • 100 bytes</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span>Total Fee (ETH):</span>
+              <span class="badge bg-primary fee-badge" id="ionic-eth">–</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span>Total Fee (USD):</span>
+              <span class="badge bg-success fee-badge" id="ionic-usd">–</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">OKU Trade Swap</h5>
+            <p class="text-muted">200,000 gas • 300 bytes</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span>Total Fee (ETH):</span>
+              <span class="badge bg-primary fee-badge" id="oku-eth">–</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span>Total Fee (USD):</span>
+              <span class="badge bg-success fee-badge" id="oku-usd">–</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4 refresh-info">
+      Prices update every 15 seconds • Last updated: <span id="last-updated">–</span><br>
+      <small>Calculations include L1 blob prices, Ethereum base fees, and L2 execution fees. Transaction sizes may vary, and wallet fee priority settings may increase actual fees.</small>
+    </div>
+  </div>
+
+  <script>
+    const SCALARS = {
+      base_fee: 0.024740,
+      blob_base_fee: 0.801328
+    };
+
+    async function fetchData() {
+      try {
+        const [ethPriceRes, l1Res, l2Res] = await Promise.all([
+          fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT'),
+          fetch('https://api.blocknative.com/gasprices/basefee-estimates'),
+          fetch('https://api.blocknative.com/gasprices/blockprices?chainid=1135')
+        ]);
+
+        const ethPrice = parseFloat((await ethPriceRes.json()).lastPrice);
+        const l1Data = await l1Res.json();
+        const l2Data = await l2Res.json();
+
+        return {
+          ethPrice,
+          // These values are assumed to be in gwei
+          l1BaseFee: l1Data.baseFeePerGas,
+          l1BlobFee: l1Data.blobBaseFeePerGas,
+          l2BaseFee: l2Data.blockPrices[0].baseFeePerGas
         };
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return null;
+      }
+    }
 
-        async function fetchData() {
-            try {
-                const [ethPriceRes, l1Res, l2Res] = await Promise.all([
-                    fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT'),
-                    fetch('https://api.blocknative.com/gasprices/basefee-estimates'),
-                    fetch('https://api.blocknative.com/gasprices/blockprices?chainid=1135')
-                ]);
+    function calculateFees(params, data) {
+      // L2 Execution Fee
+      const priorityFee = data.l2BaseFee * 0.10;
+      const l2ExecutionFee = (data.l2BaseFee + priorityFee) * params.gas;
 
-                const ethPrice = parseFloat((await ethPriceRes.json()).lastPrice);
-                const l1Data = await l1Res.json();
-                const l2Data = await l2Res.json();
+      // L1 Data Fee
+      const weightedGasPrice = (16 * SCALARS.base_fee * data.l1BaseFee) +
+                               (SCALARS.blob_base_fee * data.l1BlobFee);
+      const l1DataFee = params.size * weightedGasPrice;
 
-                return {
-                    ethPrice,
-                    // Convert from wei to gwei (1 gwei = 1e9 wei)
-                    l1BaseFee: l1Data.baseFeePerGas,
-                    l1BlobFee: l1Data.blobBaseFeePerGas,
-                    l2BaseFee: l2Data.blockPrices[0].baseFeePerGas
-                };
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                return null;
-            }
-        }
+      // Convert from gwei to ETH (1 gwei = 0.000000001 ETH)
+      const totalEth = (l2ExecutionFee + l1DataFee) / 1e9;
+      const totalUsd = totalEth * data.ethPrice;
 
-        function calculateFees(params, data) {
-            // L2 Execution Fee
-            const priorityFee = data.l2BaseFee * 0.10;
-            const l2ExecutionFee = (data.l2BaseFee + priorityFee) * params.gas;
+      return {
+        eth: totalEth.toFixed(9),
+        usd: totalUsd.toFixed(4)
+      };
+    }
 
-            // L1 Data Fee
-            const weightedGasPrice = (16 * SCALARS.base_fee * data.l1BaseFee) + 
-                                   (SCALARS.blob_base_fee * data.l1BlobFee);
-            const l1DataFee = params.size * weightedGasPrice;
+    async function updatePrices() {
+      const data = await fetchData();
+      if (!data) return;
 
-            // Convert from gwei to ETH (1 gwei = 0.000000001 ETH)
-            const totalEth = (l2ExecutionFee + l1DataFee) / 1000000000;
-            const totalUsd = totalEth * data.ethPrice;
+      const transactions = [
+        { id: 'regular', gas: 21000, size: 100 },
+        { id: 'ionic', gas: 1500000, size: 100 },
+        { id: 'oku', gas: 200000, size: 300 }
+      ];
 
-            return {
-                eth: totalEth.toFixed(9),
-                usd: totalUsd.toFixed(4)
-            };
-        }
+      transactions.forEach(tx => {
+        const fees = calculateFees(tx, data);
+        document.getElementById(`${tx.id}-eth`).textContent = fees.eth;
+        document.getElementById(`${tx.id}-usd`).textContent = `$${fees.usd}`;
+      });
 
-        async function updatePrices() {
-            const data = await fetchData();
-            if (!data) return;
+      // Update the current Lisk base fee display with 10 decimals
+      document.getElementById('lisk-base').textContent = parseFloat(data.l2BaseFee).toFixed(10);
 
-            const transactions = [
-                { id: 'regular', gas: 21000, size: 100 },
-                { id: 'ionic', gas: 1500000, size: 100 },
-                { id: 'oku', gas: 200000, size: 300 }
-            ];
+      document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+    }
 
-            transactions.forEach(tx => {
-                const fees = calculateFees(tx, data);
-                document.getElementById(`${tx.id}-eth`).textContent = fees.eth;
-                document.getElementById(`${tx.id}-usd`).textContent = `$${fees.usd}`;
-            });
-
-            document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
-        }
-
-        // Initial load and refresh every 15 seconds
-        updatePrices();
-        setInterval(updatePrices, 15000);
-    </script>
+    // Initial load and refresh every 15 seconds
+    updatePrices();
+    setInterval(updatePrices, 15000);
+  </script>
 </body>
 </html>
