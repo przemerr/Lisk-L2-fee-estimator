@@ -195,7 +195,7 @@
       });
 
       // Update the current Lisk base fee display with 10 decimals
-      document.getElementById('lisk-base').textContent = parseFloat(data.l2BaseFee).toFixed(10);
+      document.getElementById('lisk-base').textContent = parseFloat(data.l2BaseFee).toFixed(9);
 
       document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
     }
