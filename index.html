@@ -193,7 +193,9 @@
     async function updatePrices() {
       const data = await fetchData();
       if (!data) return;
-
+      
+      data.l2BaseFee = data.l2BaseFee * 1.15;
+      
       const transactions = [
         { id: 'regular', gas: 21000, size: 100 },
         { id: 'ionic', gas: 1500000, size: 100 },
