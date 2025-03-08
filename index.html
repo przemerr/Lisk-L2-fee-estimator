@@ -108,7 +108,7 @@
       </div>
     </div>
 
-    <!-- Banner Row -->
+    <!-- Updated Banner Row -->
     <div class="row mb-4">
       <div class="col-md-6">
         <div class="card">
@@ -121,16 +121,20 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">Ethereum Blob Price</h5>
-            <p class="card-text">
-              <span id="eth-blob">–</span> gwei
-            </p>
-          </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title text-center">Ethereum Fees</h5>
+      <div class="row">
+        <div class="col-6 text-center">
+          <p class="card-text">Base Fee: <span id="eth-base">–</span> gwei</p>
+        </div>
+        <div class="col-6 text-center">
+          <p class="card-text">Blob Price: <span id="eth-blob">–</span> gwei</p>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- Refresh/Info Footer -->
     <div class="text-center mt-4 refresh-info">
@@ -145,7 +149,6 @@
       blob_base_fee: 0.801328
     };
 
-    
     async function fetchLiskBaseFee() {
       try {
         const response = await fetch('https://rpc.api.lisk.com', {
@@ -162,7 +165,6 @@
         });
         const data = await response.json();
         if (data.result && data.result.baseFeePerGas) {
-          
           const baseFeeWei = parseInt(data.result.baseFeePerGas, 16);
           const baseFeeGwei = baseFeeWei / 1e9;
           return baseFeeGwei;
@@ -178,7 +180,6 @@
 
     async function fetchData() {
       try {
-        // Fetch ETH price and L1 fee data, and get Lisk base fee from the node.
         const [ethPriceRes, l1Res, liskBaseFee] = await Promise.all([
           fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT'),
           fetch('https://api.blocknative.com/gasprices/basefee-estimates'),
@@ -190,10 +191,9 @@
 
         return {
           ethPrice,
-          // Values from Blocknative are assumed to be in gwei.
           l1BaseFee: l1Data.baseFeePerGas,
           l1BlobFee: l1Data.blobBaseFeePerGas,
-          l2BaseFee: liskBaseFee 
+          l2BaseFee: liskBaseFee
         };
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -202,19 +202,13 @@
     }
 
     function calculateFees(params, data) {
-      // L2 Execution Fee calculation using Lisk base fee
       const priorityFee = data.l2BaseFee * 0.10;
       const l2ExecutionFee = (data.l2BaseFee + priorityFee) * params.gas;
-
-      // L1 Data Fee calculation using Blocknative data
       const weightedGasPrice = (16 * SCALARS.base_fee * data.l1BaseFee) +
                                (SCALARS.blob_base_fee * data.l1BlobFee);
       const l1DataFee = params.size * weightedGasPrice;
-
-      // Convert from gwei to ETH (1 gwei = 0.000000001 ETH)
       const totalEth = (l2ExecutionFee + l1DataFee) / 1e9;
       const totalUsd = totalEth * data.ethPrice;
-
       return {
         eth: totalEth.toFixed(9),
         usd: totalUsd.toFixed(4)
@@ -225,7 +219,6 @@
       const data = await fetchData();
       if (!data) return;
 
-      // Optionally adjust the Lisk base fee if desired (e.g. a multiplier)
       data.l2BaseFee = data.l2BaseFee * 1;
 
       const transactions = [
@@ -240,11 +233,12 @@
         document.getElementById(`${tx.id}-usd`).textContent = `$${fees.usd}`;
       });
 
-      // Update banner values for Lisk base fee and Ethereum blob price.
       document.getElementById('lisk-base').textContent =
         data.l2BaseFee ? parseFloat(data.l2BaseFee).toFixed(9) : '–';
       document.getElementById('eth-blob').textContent =
         data.l1BlobFee ? parseFloat(data.l1BlobFee).toFixed(9) : '–';
+      document.getElementById('eth-base').textContent =
+        data.l1BaseFee ? parseFloat(data.l1BaseFee).toFixed(9) : '–';
 
       document.getElementById('last-updated').textContent =
         new Date().toLocaleTimeString();
@@ -253,14 +247,14 @@
     // Initial load
     updatePrices();
 
-    // Refresh every 15 seconds, but only if the page is visible.
+    // Refresh every 15 seconds, but only if the page is visible
     setInterval(() => {
       if (!document.hidden) {
         updatePrices();
       }
     }, 15000);
 
-    // Immediately update prices when the page becomes visible.
+    // Immediately update prices when the page becomes visible
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
         updatePrices();
